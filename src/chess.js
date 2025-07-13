@@ -16,7 +16,6 @@
 };
 
 function initGame() {
-    const board = document.getElementById('chessboard');
     enableDragAndDrop();
 }
 

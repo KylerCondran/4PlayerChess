@@ -11,7 +11,6 @@ body {
     grid-template-columns: repeat(14, 1fr);
     width: 700px;
     height: 700px;
-    border: 2px solid #333;
 }
 
 .square {
@@ -49,4 +48,20 @@ body {
     background-color: #bbb !important;
     pointer-events: none;
     opacity: 0;
+}
+
+.top {
+    border-top: 2px solid #333;
+}
+
+.bottom {
+    border-bottom: 2px solid #333;
+}
+
+.left {
+    border-left: 2px solid #333;
+}
+
+.right {
+    border-right: 2px solid #333;
 }
