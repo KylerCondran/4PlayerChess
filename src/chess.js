@@ -63,7 +63,7 @@ function renderBoard(board) {
             ) {
                 square.classList.add('inactive');
                 square.style.pointerEvents = 'none';
-                square.style.opacity = '0.5';
+                square.style.opacity = '0';
             }
             row.appendChild(square);
         }
