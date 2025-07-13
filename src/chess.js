@@ -1,21 +1,4 @@
-﻿const pieces = {
-    pawn: '♟',
-    rook: '♜',
-    knight: '♞',
-    bishop: '♝',
-    queen: '♛',
-    king: '♚',
-    white: {
-        pawn: '♙',
-        rook: '♖',
-        knight: '♘',
-        bishop: '♗',
-        queen: '♕',
-        king: '♔'
-    }
-};
-
-function initGame() {
+﻿function initGame() {
     // Make all pieces draggable and set up dragstart listeners
     document.querySelectorAll('.piece').forEach(piece => {
         piece.setAttribute('draggable', 'true');
