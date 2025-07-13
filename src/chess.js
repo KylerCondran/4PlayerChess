@@ -16,6 +16,16 @@
 };
 
 function initGame() {
+    // Make all pieces draggable and set up dragstart listeners
+    document.querySelectorAll('.piece').forEach(piece => {
+        piece.setAttribute('draggable', 'true');
+        piece.addEventListener('dragstart', (e) => {
+            const parentSquare = piece.parentElement;
+            if (parentSquare && parentSquare.dataset.position) {
+                e.dataTransfer.setData('text/plain', parentSquare.dataset.position);
+            }
+        });
+    });
     enableDragAndDrop();
 }
 
