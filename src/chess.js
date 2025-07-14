@@ -1,15 +1,40 @@
 ﻿function initGame() {
     // Make all pieces draggable and set up dragstart listeners
-    document.querySelectorAll('.piece').forEach(piece => {
-        piece.setAttribute('draggable', 'true');
-        piece.addEventListener('dragstart', (e) => {
-            const parentSquare = piece.parentElement;
-            if (parentSquare && parentSquare.dataset.position) {
-                e.dataTransfer.setData('text/plain', parentSquare.dataset.position);
-            }
-        });
-    });
+    setDraggablePieces();
     enableDragAndDrop();
+}
+
+const turnOrder = ['red', 'blue', 'yellow', 'green'];
+let currentTurnIndex = 0;
+let currentTurn = turnOrder[currentTurnIndex];
+
+function setDraggablePieces() {
+    document.querySelectorAll('.piece').forEach(piece => {
+        // Get color from classList (red, blue, yellow, green)
+        const colors = ['red', 'blue', 'yellow', 'green'];
+        const pieceColor = colors.find(c => piece.classList.contains(c));
+        if (pieceColor === currentTurn) {
+            piece.setAttribute('draggable', 'true');
+        } else {
+            piece.setAttribute('draggable', 'false');
+        }
+    });
+    // Set dragstart only for current player's pieces
+    document.querySelectorAll('.piece').forEach(piece => {
+        piece.removeEventListener('dragstart', piece._dragHandler);
+        const colors = ['red', 'blue', 'yellow', 'green'];
+        const pieceColor = colors.find(c => piece.classList.contains(c));
+        if (pieceColor === currentTurn) {
+            const handler = function(e) {
+                const parentSquare = piece.parentElement;
+                if (parentSquare && parentSquare.dataset.position) {
+                    e.dataTransfer.setData('text/plain', parentSquare.dataset.position);
+                }
+            };
+            piece._dragHandler = handler;
+            piece.addEventListener('dragstart', handler);
+        }
+    });
 }
 
 // Enable dropping on squares
@@ -23,13 +48,13 @@ function enableDragAndDrop() {
             const fromPos = e.dataTransfer.getData('text/plain');
             const fromSquare = document.querySelector(`[data-position="${fromPos}"]`);
             const pieceElement = fromSquare.querySelector('.piece');
-            if (pieceElement) {
+            if (pieceElement && pieceElement.getAttribute('draggable') === 'true') {
                 fromSquare.removeChild(pieceElement);
                 square.appendChild(pieceElement);
-                // Update the piece's position attribute for future drags
-                pieceElement.addEventListener('dragstart', (ev) => {
-                    ev.dataTransfer.setData('text/plain', square.dataset.position);
-                });
+                // Next player's turn
+                currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
+                currentTurn = turnOrder[currentTurnIndex];
+                setDraggablePieces();
             }
         });
     });
