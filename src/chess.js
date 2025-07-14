@@ -49,6 +49,13 @@ function enableDragAndDrop() {
             const fromSquare = document.querySelector(`[data-position="${fromPos}"]`);
             const pieceElement = fromSquare.querySelector('.piece');
             if (pieceElement && pieceElement.getAttribute('draggable') === 'true') {
+                // Check if there's a piece to capture
+                const capturedPiece = square.querySelector('.piece');
+                if (capturedPiece) {
+                    // Remove the captured piece
+                    square.removeChild(capturedPiece);
+                }
+                // Move the attacking piece
                 fromSquare.removeChild(pieceElement);
                 square.appendChild(pieceElement);
                 // Next player's turn
