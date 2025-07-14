@@ -16,10 +16,10 @@ body {
 .square {
     width: 50px;
     height: 50px;
-    box-sizing: border-box;
 }
 
-.square:nth-child(odd) {
+.square:nth-chi    box-sizing: border-box;
+ld(odd) {
     background-color: #eee;
 }
 
@@ -43,6 +43,7 @@ body {
     align-items: center;
     font-size: 2em;
     cursor: pointer;
+    user-select: none;
 }
 
 .inactive {
