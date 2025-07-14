@@ -9,10 +9,9 @@ let currentTurnIndex = 0;
 let currentTurn = turnOrder[currentTurnIndex];
 
 function updateTurnIndicator() {
-    const indicator = document.getElementById('turn-indicator');
+    const indicator = document.getElementById('tip');
     const color = currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1);
-    indicator.textContent = `${color}'s Move`;
-    indicator.style.color = currentTurn;
+    indicator.src = `img/${currentTurn}/pawn.svg`;
 }
 
 function setDraggablePieces() {
