@@ -8,7 +8,15 @@ const turnOrder = ['red', 'blue', 'yellow', 'green'];
 let currentTurnIndex = 0;
 let currentTurn = turnOrder[currentTurnIndex];
 
+function updateTurnIndicator() {
+    const indicator = document.getElementById('turn-indicator');
+    const color = currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1);
+    indicator.textContent = `${color}'s Move`;
+    indicator.style.color = currentTurn;
+}
+
 function setDraggablePieces() {
+    updateTurnIndicator();
     document.querySelectorAll('.piece').forEach(piece => {
         // Get color from classList (red, blue, yellow, green)
         const colors = ['red', 'blue', 'yellow', 'green'];
