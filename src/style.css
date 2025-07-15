@@ -32,6 +32,7 @@ body {
     width: 50px;
     height: 50px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .square:nth-child(odd) {
@@ -81,4 +82,34 @@ body {
 
 .right {
     border-right: 2px solid #333;
+}
+
+.valid-move {
+    position: relative;
+}
+
+.valid-move::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: rgba(0, 255, 0, 0.3);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.valid-move:has(.piece::before) {
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(255, 0, 0, 0.5);
+    box-sizing: border-box;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.pawn-debug {
+    outline: 2px dashed orange !important;
 }
