@@ -22,6 +22,6 @@ THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. YOU MAY USE THIS
 ```
 git clone https://github.com/KylerCondran/4PlayerChess.git
 ```
-2. Setup An IIS Web Server To Host The Files
+2. Setup A Web Server To Host The Files
    
 3. Copy The Files To The Web Server Root Directory
