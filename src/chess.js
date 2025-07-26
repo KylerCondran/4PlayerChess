@@ -50,7 +50,7 @@ function calculateValidMoves(piece) {
 
     switch (pieceType) {
         case 'pawn':
-            calculatePawnMoves(pos, color);
+            calculatePawnMoves(pos, color, piece);
             break;
         case 'rook':
             calculateRookMoves(pos, color);
@@ -72,9 +72,8 @@ function calculateValidMoves(piece) {
     return validMoves;
 }
 
-function calculatePawnMoves(pos, color) {
+function calculatePawnMoves(pos, color, piece) {
     let direction;
-    // Rotated pawn direction by another 90 degrees
     switch (color) {
         case 'red': direction = { x: -1, y: 0 }; break;     // left
         case 'blue': direction = { x: 0, y: -1 }; break;    // up
@@ -87,6 +86,15 @@ function calculatePawnMoves(pos, color) {
     let square = getSquareAt(newPos.x, newPos.y);
     if (isValidSquare(square) && !square.querySelector('.piece')) {
         validMoves.push(square);
+
+        // Two-square move if pawn hasn't moved yet
+        if (piece && piece.classList.contains('first-move')) {
+            let twoSquarePos = { x: pos.x + direction.x * 2, y: pos.y + direction.y * 2 };
+            let twoSquare = getSquareAt(twoSquarePos.x, twoSquarePos.y);
+            if (isValidSquare(twoSquare) && !twoSquare.querySelector('.piece')) {
+                validMoves.push(twoSquare);
+            }
+        }
     }
 
     // Capture moves (diagonally, rotated)
@@ -116,6 +124,26 @@ function calculatePawnMoves(pos, color) {
             }
         }
     });
+
+    // En passant logic (unchanged)
+    if (lastMove && lastMove.pieceType === 'pawn' && lastMove.twoSquare) {
+        let adjMoves = [];
+        switch (color) {
+            case 'red': adjMoves = [{ x: 0, y: -1 }, { x: 0, y: 1 }]; break;
+            case 'blue': adjMoves = [{ x: -1, y: 0 }, { x: 1, y: 0 }]; break;
+            case 'yellow': adjMoves = [{ x: 0, y: -1 }, { x: 0, y: 1 }]; break;
+            case 'green': adjMoves = [{ x: -1, y: 0 }, { x: 1, y: 0 }]; break;
+        }
+        adjMoves.forEach(adj => {
+            let adjPos = { x: pos.x + adj.x, y: pos.y + adj.y };
+            if (adjPos.x === lastMove.to.x && adjPos.y === lastMove.to.y) {
+                let epSquare = getSquareAt(lastMove.from.x + direction.x, lastMove.from.y + direction.y);
+                if (isValidSquare(epSquare) && !epSquare.querySelector('.piece')) {
+                    validMoves.push(epSquare);
+                }
+            }
+        });
+    }
 }
 
 function calculateStraightLine(pos, color, directions) {
@@ -284,9 +312,31 @@ function enableDragAndDrop() {
                     // Remove the captured piece
                     square.removeChild(capturedPiece);
                 }
+
                 // Move the attacking piece
                 fromSquare.removeChild(pieceElement);
+                
+                // Remove first-move class if it's a pawn
+                if (pieceElement.classList.contains('pawn')) {
+                    pieceElement.classList.remove('first-move');
+                }
+                
                 square.appendChild(pieceElement);
+
+                // Track last move for en passant
+                const isTwoSquareMove = pieceElement.classList.contains('pawn') && (
+                    Math.abs(getPosition(square).x - getPosition(fromSquare).x) === 2 ||
+                    Math.abs(getPosition(square).y - getPosition(fromSquare).y) === 2
+                );
+
+                lastMove = {
+                    pieceType: getPieceType(pieceElement),
+                    color: turnOrder.find(c => pieceElement.classList.contains(c)),
+                    from: getPosition(fromSquare),
+                    to: getPosition(square),
+                    twoSquare: isTwoSquareMove
+                };
+
                 // Clear valid moves array
                 validMoves = [];
                 // Next player's turn
@@ -306,4 +356,10 @@ function enableDragAndDrop() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initGame);
+document.addEventListener('DOMContentLoaded', () => {
+    // Add first-move class to all pawns initially
+    document.querySelectorAll('.piece.pawn').forEach(pawn => {
+        pawn.classList.add('first-move');
+    });
+    initGame();
+});
