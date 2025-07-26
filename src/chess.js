@@ -356,10 +356,4 @@ function enableDragAndDrop() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Add first-move class to all pawns initially
-    document.querySelectorAll('.piece.pawn').forEach(pawn => {
-        pawn.classList.add('first-move');
-    });
-    initGame();
-});
+document.addEventListener('DOMContentLoaded', initGame);
