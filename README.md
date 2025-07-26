@@ -1,12 +1,14 @@
 # 4PlayerChess
 
+Enjoy a game of chess with 4 players! This is a web-based chess game that allows you to play with friends. The game is designed to be played in a web browser and is compatible with most modern browsers. Currently the game is in beta and is being actively developed. The game is open source and contributions are welcome!
+
 <p align="center">
   <a href="https://kylercondran.github.io/4PlayerChess/src/index.html">Play This Game</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/KylerCondran/4PlayerChess/issues/new">Report bug</a>
-  ·
+  -
   <a href="https://github.com/KylerCondran/4PlayerChess/issues/new">Request feature</a>
 </p>
 
