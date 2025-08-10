@@ -240,43 +240,16 @@ function calculateKingMoves(pos, color) {
     });
 }
 
-let resignedPlayers = [];
-
-function setResignedGrey(color) {
-    document.querySelectorAll('.piece.' + color).forEach(piece => {
-        piece.classList.add('resigned-grey');
-        piece.setAttribute('draggable', 'false');
-    });
-}
-
-function skipResignedTurns() {
-    // If current player is resigned, skip to next and rotate board for each skip
-    let skipped = false;
-    while (resignedPlayers.includes(currentTurn)) {
-        currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
-        currentTurn = turnOrder[currentTurnIndex];
-        rotateBoardForNextPlayer();
-        skipped = true;
-    }
-    if (skipped) setDraggablePieces();
-}
-
 function setDraggablePieces() {
     updateTurnIndicator();
     document.querySelectorAll('.piece').forEach(piece => {
         // Get color from classList (red, blue, yellow, green)
         const colors = ['red', 'blue', 'yellow', 'green'];
         const pieceColor = colors.find(c => piece.classList.contains(c));
-        if (pieceColor === currentTurn && !resignedPlayers.includes(pieceColor)) {
+        if (pieceColor === currentTurn) {
             piece.setAttribute('draggable', 'true');
         } else {
             piece.setAttribute('draggable', 'false');
-        }
-        // If resigned, add grey filter
-        if (resignedPlayers.includes(pieceColor)) {
-            piece.classList.add('resigned-grey');
-        } else {
-            piece.classList.remove('resigned-grey');
         }
     });
 
@@ -299,36 +272,6 @@ function setDraggablePieces() {
                     validMoves.forEach(square => {
                         square.classList.add('valid-move');
                     });
-
-                    // Use a wrapper div and rotate by CSS for drag preview
-                    const dragImgWrapper = document.createElement('div');
-                    dragImgWrapper.style.position = 'absolute';
-                    dragImgWrapper.style.left = '-1000px';
-                    dragImgWrapper.style.top = '-1000px';
-                    dragImgWrapper.style.pointerEvents = 'none';
-                    dragImgWrapper.style.zIndex = '9999';
-                    dragImgWrapper.style.width = (piece.width || 50) + 'px';
-                    dragImgWrapper.style.height = (piece.height || 50) + 'px';
-                    dragImgWrapper.style.display = 'flex';
-                    dragImgWrapper.style.alignItems = 'center';
-                    dragImgWrapper.style.justifyContent = 'center';
-
-                    // Set rotation based on player color
-                    let rotation = '0deg';
-                    if (pieceColor === 'blue') rotation = '-90deg';
-                    else if (pieceColor === 'yellow') rotation = '-180deg';
-                    else if (pieceColor === 'green') rotation = '-270deg';
-                    dragImgWrapper.style.transform = `rotate(${rotation})`;
-
-                    const dragImg = piece.cloneNode(true);
-                    dragImg.style.width = (piece.width || 50) + 'px';
-                    dragImg.style.height = (piece.height || 50) + 'px';
-                    dragImgWrapper.appendChild(dragImg);
-                    document.body.appendChild(dragImgWrapper);
-                    e.dataTransfer.setDragImage(dragImgWrapper, dragImgWrapper.offsetWidth / 2, dragImgWrapper.offsetHeight / 2);
-                    setTimeout(() => {
-                        if (dragImgWrapper.parentNode) dragImgWrapper.parentNode.removeChild(dragImgWrapper);
-                    }, 50);
                 }
             };
             piece._dragHandler = dragHandler;
@@ -416,7 +359,7 @@ function enableDragAndDrop() {
                         const color = turnOrder.find(c => pieceElement.classList.contains(c));
                         const queen = document.createElement('img');
                         queen.className = `piece ${color} queen`;
-                        queen.src = `img/${color}/queen.svg`;
+                        queen.src = `img/${color}/promoqueen.svg`;
                         queen.setAttribute('draggable', color === currentTurn ? 'true' : 'false');
                         queen.style.transform = pieceElement.style.transform;
                         square.removeChild(pieceElement);
@@ -444,9 +387,10 @@ function enableDragAndDrop() {
                 // Next player's turn
                 currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
                 currentTurn = turnOrder[currentTurnIndex];
-                skipResignedTurns();
+                
                 // Rotate board for next player
                 rotateBoardForNextPlayer();
+                
                 // Update draggable pieces
                 setDraggablePieces();
             }
@@ -464,7 +408,7 @@ function enableDragAndDrop() {
 
 function rotateBoardForNextPlayer() {
     const chessboard = document.getElementById('chessboard');
-    boardRotation = (boardRotation - 90);
+    boardRotation = (boardRotation - 90) % 360;
     chessboard.style.transform = `rotate(${boardRotation}deg)`;
 
     // Counter-rotate all SVG pieces to stay upright
@@ -484,21 +428,4 @@ document.addEventListener('DOMContentLoaded', () => {
         pawn.classList.add('move-2'); // Start move count at 2
     });
     initGame();
-
-    // Resign button
-    const resignBtn = document.getElementById('resign-btn');
-    if (resignBtn) {
-        resignBtn.addEventListener('click', function() {
-            if (!resignedPlayers.includes(currentTurn)) {
-                resignedPlayers.push(currentTurn);
-                setResignedGrey(currentTurn);
-                // Skip turn immediately if it's the current player
-                currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
-                currentTurn = turnOrder[currentTurnIndex];
-                skipResignedTurns();
-                rotateBoardForNextPlayer();
-                setDraggablePieces();
-            }
-        });
-    }
 });
