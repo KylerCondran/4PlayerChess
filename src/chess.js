@@ -1,8 +1,18 @@
 ﻿// Board state and move tracking
 let validMoves = [];
 const boardSize = { width: 14, height: 14 };
+let boardRotation = 0;
 
 function initGame() {
+    // Initialize board rotation
+    const chessboard = document.getElementById('chessboard');
+    chessboard.classList.add('rotate-0');
+
+    // Set initial rotation for pieces
+    document.querySelectorAll('.piece').forEach(piece => {
+        piece.style.transform = 'rotate(0deg)';
+    });
+
     // Make all pieces draggable and set up dragstart listeners
     setDraggablePieces();
     enableDragAndDrop();
@@ -342,6 +352,11 @@ function enableDragAndDrop() {
                 // Next player's turn
                 currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
                 currentTurn = turnOrder[currentTurnIndex];
+                
+                // Rotate board for next player
+                rotateBoardForNextPlayer();
+                
+                // Update draggable pieces
                 setDraggablePieces();
             }
         });
@@ -354,6 +369,21 @@ function enableDragAndDrop() {
         });
         validMoves = [];
     });
+}
+
+function rotateBoardForNextPlayer() {
+    const chessboard = document.getElementById('chessboard');
+    boardRotation = (boardRotation - 90) % 360;
+    chessboard.style.transform = `rotate(${boardRotation}deg)`;
+
+    // Counter-rotate all SVG pieces to stay upright
+    document.querySelectorAll('.piece').forEach(piece => {
+        piece.style.transform = `rotate(${-boardRotation}deg)`;
+    });
+
+    // Remove unused rotation classes
+    chessboard.classList.remove('rotate-0', 'rotate-90', 'rotate-180', 'rotate-270');
+    chessboard.classList.add(`rotate-${boardRotation}`);
 }
 
 document.addEventListener('DOMContentLoaded', initGame);

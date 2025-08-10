@@ -26,6 +26,8 @@ body {
     grid-template-columns: repeat(14, 1fr);
     width: 700px;
     height: 700px;
+    transition: transform 0.5s ease;
+    transform-origin: center center;
 }
 
 .square {
@@ -60,6 +62,7 @@ body {
     font-size: 2em;
     cursor: pointer;
     user-select: none;
+    transition: transform 0.5s ease;
 }
 
 .inactive {
