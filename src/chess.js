@@ -272,6 +272,36 @@ function setDraggablePieces() {
                     validMoves.forEach(square => {
                         square.classList.add('valid-move');
                     });
+
+                    // Use a wrapper div and rotate by CSS for drag preview
+                    const dragImgWrapper = document.createElement('div');
+                    dragImgWrapper.style.position = 'absolute';
+                    dragImgWrapper.style.left = '-1000px';
+                    dragImgWrapper.style.top = '-1000px';
+                    dragImgWrapper.style.pointerEvents = 'none';
+                    dragImgWrapper.style.zIndex = '9999';
+                    dragImgWrapper.style.width = (piece.width || 50) + 'px';
+                    dragImgWrapper.style.height = (piece.height || 50) + 'px';
+                    dragImgWrapper.style.display = 'flex';
+                    dragImgWrapper.style.alignItems = 'center';
+                    dragImgWrapper.style.justifyContent = 'center';
+
+                    // Set rotation based on player color
+                    let rotation = '0deg';
+                    if (pieceColor === 'blue') rotation = '-90deg';
+                    else if (pieceColor === 'yellow') rotation = '-180deg';
+                    else if (pieceColor === 'green') rotation = '-270deg';
+                    dragImgWrapper.style.transform = `rotate(${rotation})`;
+
+                    const dragImg = piece.cloneNode(true);
+                    dragImg.style.width = (piece.width || 50) + 'px';
+                    dragImg.style.height = (piece.height || 50) + 'px';
+                    dragImgWrapper.appendChild(dragImg);
+                    document.body.appendChild(dragImgWrapper);
+                    e.dataTransfer.setDragImage(dragImgWrapper, dragImgWrapper.offsetWidth / 2, dragImgWrapper.offsetHeight / 2);
+                    setTimeout(() => {
+                        if (dragImgWrapper.parentNode) dragImgWrapper.parentNode.removeChild(dragImgWrapper);
+                    }, 50);
                 }
             };
             piece._dragHandler = dragHandler;
