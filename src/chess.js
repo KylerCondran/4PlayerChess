@@ -313,7 +313,7 @@ function enableDragAndDrop() {
 
             const fromPos = e.dataTransfer.getData('text/plain');
             const fromSquare = document.querySelector(`[data-position="${fromPos}"]`);
-            const pieceElement = fromSquare.querySelector('.piece');
+            let pieceElement = fromSquare.querySelector('.piece');
             
             if (pieceElement && pieceElement.getAttribute('draggable') === 'true') {
                 // Check if there's a piece to capture
@@ -332,6 +332,41 @@ function enableDragAndDrop() {
                 }
                 
                 square.appendChild(pieceElement);
+
+                // Pawn move count logic
+                if (pieceElement.classList.contains('pawn')) {
+                    // Find current move count class
+                    let moveCount = 2;
+                    pieceElement.classList.forEach(cls => {
+                        if (cls.startsWith('move-')) {
+                            moveCount = parseInt(cls.split('-')[1]);
+                        }
+                    });
+                    // Remove old move count class
+                    pieceElement.classList.remove(`move-${moveCount}`);
+                    // Determine if this is a double move
+                    const from = getPosition(fromSquare);
+                    const to = getPosition(square);
+                    let increment = 1;
+                    if (Math.abs(from.x - to.x) === 2 || Math.abs(from.y - to.y) === 2) {
+                        increment = 2;
+                    }
+                    // Increment move count
+                    moveCount += increment;
+                    pieceElement.classList.add(`move-${moveCount}`);
+                    // If move count is 8, promote to queen
+                    if (moveCount === 8) {
+                        const color = turnOrder.find(c => pieceElement.classList.contains(c));
+                        const queen = document.createElement('img');
+                        queen.className = `piece ${color} queen`;
+                        queen.src = `img/${color}/queen.svg`;
+                        queen.setAttribute('draggable', color === currentTurn ? 'true' : 'false');
+                        queen.style.transform = pieceElement.style.transform;
+                        square.removeChild(pieceElement);
+                        square.appendChild(queen);
+                        pieceElement = queen;
+                    }
+                }
 
                 // Track last move for en passant
                 const isTwoSquareMove = pieceElement.classList.contains('pawn') && (
@@ -386,4 +421,11 @@ function rotateBoardForNextPlayer() {
     chessboard.classList.add(`rotate-${boardRotation}`);
 }
 
-document.addEventListener('DOMContentLoaded', initGame);
+document.addEventListener('DOMContentLoaded', () => {
+    // Add first-move class to all pawns initially
+    document.querySelectorAll('.piece.pawn').forEach(pawn => {
+        pawn.classList.add('first-move');
+        pawn.classList.add('move-2'); // Start move count at 2
+    });
+    initGame();
+});
