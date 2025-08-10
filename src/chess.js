@@ -464,7 +464,7 @@ function enableDragAndDrop() {
 
 function rotateBoardForNextPlayer() {
     const chessboard = document.getElementById('chessboard');
-    boardRotation = (boardRotation - 90) % 360;
+    boardRotation = (boardRotation - 90);
     chessboard.style.transform = `rotate(${boardRotation}deg)`;
 
     // Counter-rotate all SVG pieces to stay upright
