@@ -116,3 +116,33 @@ body {
 .pawn-debug {
     outline: 2px dashed orange !important;
 }
+
+.resigned-grey {
+    filter: grayscale(1) brightness(0.7) !important;
+    opacity: 0.6 !important;
+}
+
+#resign-button {
+    position: fixed;
+    left: 20px;
+    top: 100px;
+    z-index: 10;
+}
+
+#resign-btn {
+    background-color: #888;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+}
+
+#resign-btn:hover {
+    background-color: #1565c0;
+    color: white;
+}
