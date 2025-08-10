@@ -4,7 +4,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #555450;
 }
 
 #turn-indicator {
@@ -15,7 +15,7 @@ body {
     font-weight: bold;
     padding: 10px;
     border-radius: 5px;
-    background-color: #888;
+    background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
@@ -130,7 +130,7 @@ body {
 }
 
 #resign-btn {
-    background-color: #888;
+    background-color: #fff;
     color: black;
     border: none;
     border-radius: 5px;
