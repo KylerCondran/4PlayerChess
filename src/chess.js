@@ -240,16 +240,43 @@ function calculateKingMoves(pos, color) {
     });
 }
 
+let resignedPlayers = [];
+
+function setResignedGrey(color) {
+    document.querySelectorAll('.piece.' + color).forEach(piece => {
+        piece.classList.add('resigned-grey');
+        piece.setAttribute('draggable', 'false');
+    });
+}
+
+function skipResignedTurns() {
+    // If current player is resigned, skip to next and rotate board for each skip
+    let skipped = false;
+    while (resignedPlayers.includes(currentTurn)) {
+        currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
+        currentTurn = turnOrder[currentTurnIndex];
+        rotateBoardForNextPlayer();
+        skipped = true;
+    }
+    if (skipped) setDraggablePieces();
+}
+
 function setDraggablePieces() {
     updateTurnIndicator();
     document.querySelectorAll('.piece').forEach(piece => {
         // Get color from classList (red, blue, yellow, green)
         const colors = ['red', 'blue', 'yellow', 'green'];
         const pieceColor = colors.find(c => piece.classList.contains(c));
-        if (pieceColor === currentTurn) {
+        if (pieceColor === currentTurn && !resignedPlayers.includes(pieceColor)) {
             piece.setAttribute('draggable', 'true');
         } else {
             piece.setAttribute('draggable', 'false');
+        }
+        // If resigned, add grey filter
+        if (resignedPlayers.includes(pieceColor)) {
+            piece.classList.add('resigned-grey');
+        } else {
+            piece.classList.remove('resigned-grey');
         }
     });
 
@@ -417,7 +444,7 @@ function enableDragAndDrop() {
                 // Next player's turn
                 currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
                 currentTurn = turnOrder[currentTurnIndex];
-                
+                skipResignedTurns();
                 // Rotate board for next player
                 rotateBoardForNextPlayer();
                 
@@ -458,4 +485,21 @@ document.addEventListener('DOMContentLoaded', () => {
         pawn.classList.add('move-2'); // Start move count at 2
     });
     initGame();
+
+    // Resign button
+    const resignBtn = document.getElementById('resign-btn');
+    if (resignBtn) {
+        resignBtn.addEventListener('click', function () {
+            if (!resignedPlayers.includes(currentTurn)) {
+                resignedPlayers.push(currentTurn);
+                setResignedGrey(currentTurn);
+                // Skip turn immediately if it's the current player
+                currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length;
+                currentTurn = turnOrder[currentTurnIndex];
+                skipResignedTurns();
+                rotateBoardForNextPlayer();
+                setDraggablePieces();
+            }
+        });
+    }
 });
