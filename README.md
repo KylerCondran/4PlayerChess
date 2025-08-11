@@ -6,6 +6,8 @@ Enjoy a game of chess with 4 players! This is a web-based chess game that allows
   <a href="https://kylercondran.github.io/4PlayerChess/src/index.html">Play This Game</a>
 </p>
 
+<img src="https://repository-images.githubusercontent.com/1019161481/adb32cb7-498c-4598-98b6-764f2b5ba7ca" title="4PlayerChess">
+
 <p align="center">
   <a href="https://github.com/KylerCondran/4PlayerChess/issues/new">Report bug</a>
   -
