@@ -3,6 +3,13 @@ let validMoves = [];
 const boardSize = { width: 14, height: 14 };
 let boardRotation = 0;
 
+let capturedPieces = {
+    red: [],
+    blue: [],
+    yellow: [],
+    green: []
+};
+
 function initGame() {
     // Initialize board rotation
     const chessboard = document.getElementById('chessboard');
@@ -376,6 +383,19 @@ function enableDragAndDrop() {
                 // Check if there's a piece to capture
                 const capturedPiece = square.querySelector('.piece');
                 if (capturedPiece) {
+                    // Get the color and type of the captured piece
+                    const capturedColor = turnOrder.find(c => capturedPiece.classList.contains(c));
+                    const capturedType = getPieceType(capturedPiece);
+                    
+                    // Add to captured pieces array
+                    capturedPieces[turnOrder[currentTurnIndex]].push({
+                        color: capturedColor,
+                        type: capturedType
+                    });
+                    
+                    // Update the display
+                    updateCapturedPiecesDisplay();
+                    
                     // Remove the captured piece
                     square.removeChild(capturedPiece);
                 }
@@ -476,6 +496,19 @@ function rotateBoardForNextPlayer() {
     // Remove unused rotation classes
     chessboard.classList.remove('rotate-0', 'rotate-90', 'rotate-180', 'rotate-270');
     chessboard.classList.add(`rotate-${boardRotation}`);
+}
+
+function updateCapturedPiecesDisplay() {
+    for (const color of turnOrder) {
+        const row = document.querySelector(`.${color}-captured .pieces`);
+        row.innerHTML = '';
+        capturedPieces[color].forEach(piece => {
+            const img = document.createElement('img');
+            img.src = `img/${piece.color}/${piece.type}.svg`;
+            img.className = 'captured-piece';
+            row.appendChild(img);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

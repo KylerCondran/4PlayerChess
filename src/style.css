@@ -146,3 +146,43 @@ body {
     background-color: #1565c0;
     color: white;
 }
+
+#captured-pieces {
+    position: fixed;
+    left: 20px;
+    top: 150px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#captured-pieces table {
+    width: 200px;
+    border-collapse: collapse;
+}
+
+#captured-pieces tr {
+    border-bottom: 1px solid #eee;
+}
+
+#captured-pieces tr:last-child {
+    border-bottom: none;
+}
+
+#captured-pieces .color-label {
+    padding: 8px;
+    font-weight: bold;
+    width: 70px;
+}
+
+#captured-pieces .pieces {
+    padding: 8px;
+}
+
+#captured-pieces .captured-piece {
+    width: 25px;
+    height: 25px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
